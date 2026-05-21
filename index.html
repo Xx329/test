@@ -1480,7 +1480,7 @@
           <div class="extension-box">
             <strong>Extension experiment: cut one-third from the edge</strong>
             <p>If the cut is not along the center line, but near the edge at one-third width, the result is more complex.</p>
-            <button class="button amber" type="button" id="oneThirdCutButton">Show One-Third Cut Result</button>
+            <button class="button amber" type="button" id="oneThirdCutButton">Animate One-Third Cut</button>
             <div class="result-badge">
               <span>2</span>
               <div>Result: two linked loops, one smaller Möbius strip and one longer twisted loop.</div>
@@ -1795,6 +1795,8 @@ z = v sin(nu/2)</pre>
     let paintProgress = 0;
     let centerCutRunning = false;
     let centerCutProgress = 0;
+    let oneThirdCutRunning = false;
+    let oneThirdCutProgress = 0;
     let selectedCutChoice = "";
     let twistMorphRunning = false;
     let twistMorphProgress = 0;
@@ -2347,6 +2349,8 @@ z = v sin(nu/2)</pre>
       paintProgress = 0;
       centerCutRunning = false;
       centerCutProgress = 0;
+      oneThirdCutRunning = false;
+      oneThirdCutProgress = 0;
       updateProperties(n);
       viewerMode.textContent = getModeLabel(mode, n);
       revealStatus.textContent = mode === "normal" ? "Intuition mode" : "Ready";
@@ -2596,42 +2600,61 @@ z = v sin(nu/2)</pre>
       enableStageDock();
       updateModel(1, currentA, "one-third");
       disposeSceneObject(oneThirdGroup);
+      disposeSceneObject(cutLaser);
+      cutLaser = null;
       oneThirdGroup = new THREE.Group();
 
       // Demonstration approximation: the one-third cut result is represented as
-      // two clearly interlocked tube loops, so the classroom takeaway is visible.
+      // two clearly interlocked tube loops that grow out after the cut line
+      // travels. This keeps the topology message visible without simulating
+      // physical paper deformation.
       const largeLoop = createLinkedTorusLoop(1.03, 0.065, 0xf4c85f, 0.88);
       largeLoop.name = "longerTwistedLoop";
       largeLoop.rotation.x = Math.PI / 2;
-      largeLoop.position.set(-0.08, 0, 0);
+      largeLoop.userData.finalPosition = new THREE.Vector3(-0.08, 0, 0);
+      largeLoop.userData.startPosition = new THREE.Vector3(0.08, 0, 0);
+      largeLoop.userData.finalRotation = largeLoop.rotation.clone();
+      largeLoop.position.copy(largeLoop.userData.startPosition);
 
       const smallLoop = createLinkedTorusLoop(0.68, 0.06, 0x41e6df, 0.92);
       smallLoop.name = "smallerMobiusLoop";
       smallLoop.rotation.y = Math.PI / 2;
-      smallLoop.position.set(0.74, 0, 0);
+      smallLoop.userData.finalPosition = new THREE.Vector3(0.74, 0, 0);
+      smallLoop.userData.startPosition = new THREE.Vector3(0.08, 0, 0);
+      smallLoop.userData.finalRotation = smallLoop.rotation.clone();
+      smallLoop.position.copy(smallLoop.userData.startPosition);
 
       const largeGlow = createLinkedTorusLoop(1.03, 0.012, 0xf4c85f, 0.42, true);
       largeGlow.rotation.copy(largeLoop.rotation);
       largeGlow.position.copy(largeLoop.position);
+      largeGlow.userData.follow = largeLoop;
 
       const smallGlow = createLinkedTorusLoop(0.68, 0.012, 0x41e6df, 0.48, true);
       smallGlow.rotation.copy(smallLoop.rotation);
       smallGlow.position.copy(smallLoop.position);
+      smallGlow.userData.follow = smallLoop;
 
       oneThirdGroup.add(largeLoop, smallLoop, largeGlow, smallGlow);
-      oneThirdGroup.scale.setScalar(0.96);
-      oneThirdGroup.position.y = 0.42;
+      oneThirdGroup.traverse((child) => {
+        if (child.material) {
+          child.userData.baseOpacity = child.material.opacity ?? 1;
+          child.material.opacity = 0;
+          child.material.transparent = true;
+        }
+      });
+      oneThirdGroup.scale.setScalar(0.18);
+      oneThirdGroup.position.y = 0;
       meshGroup.add(oneThirdGroup);
-      if (surfaceMesh) surfaceMesh.visible = false;
-      if (wireMesh) wireMesh.visible = false;
       if (centerLine) centerLine.visible = false;
       if (boundaryGroup) boundaryGroup.visible = false;
       if (antGroup) antGroup.visible = false;
       rotationState = { x: -0.42, y: 0.72 };
-      cutMessage.textContent = "Extension reveal: cutting one-third from the edge creates two linked loops, not a single loop.";
-      revealStatus.textContent = "Two linked loops";
-      cutStatus.textContent = "One-third cut result";
-      viewerMode.textContent = "One-Third Cut · Linked Loops";
+      oneThirdCutRunning = true;
+      oneThirdCutProgress = 0;
+      cutMessage.textContent = "Watch the one-third cutting line travel first, then the two linked loops emerge.";
+      revealStatus.textContent = "One-third cut starting";
+      cutStatus.textContent = "Highlighting off-center cut";
+      viewerMode.textContent = "One-Third Cut · Animated Reveal";
     }
 
     function createLinkedTorusLoop(radius, tubeRadius, color, opacity, glow = false) {
@@ -2660,6 +2683,8 @@ z = v sin(nu/2)</pre>
     function resetCutDemo() {
       centerCutRunning = false;
       centerCutProgress = 0;
+      oneThirdCutRunning = false;
+      oneThirdCutProgress = 0;
       selectedCutChoice = "";
       document.querySelectorAll("[data-cut-choice]").forEach((button) => button.classList.remove("active"));
       cutMessage.textContent = "Choose a prediction, then reveal the result.";
@@ -3133,6 +3158,20 @@ z = v sin(nu/2)</pre>
         }
       }
 
+      if (oneThirdCutRunning) {
+        oneThirdCutProgress = Math.min(1, oneThirdCutProgress + delta * 0.36);
+        updateOneThirdCutAnimation();
+        if (oneThirdCutProgress >= 1) {
+          oneThirdCutRunning = false;
+          disposeSceneObject(cutLaser);
+          cutLaser = null;
+          cutMessage.textContent = "Extension reveal: the off-center cut creates two linked loops, one smaller Möbius-like loop and one longer twisted loop.";
+          revealStatus.textContent = "Two linked loops";
+          cutStatus.textContent = "One-third cut result";
+          viewerMode.textContent = "One-Third Cut · Linked Loops";
+        }
+      }
+
       meshGroup.rotation.x = rotationState.x;
       meshGroup.rotation.y = rotationState.y;
       if (antHalo) {
@@ -3165,6 +3204,77 @@ z = v sin(nu/2)</pre>
       );
       meshGroup.add(cutLaser);
       cutStatus.textContent = `${Math.round(centerCutProgress * 100)}% cut`;
+    }
+
+    function updateOneThirdCutAnimation() {
+      const progress = oneThirdCutProgress;
+      const cutPhase = Math.min(1, progress / 0.48);
+      const revealPhase = smoothstep(Math.max(0, (progress - 0.38) / 0.62));
+      updateOneThirdCutLaser(cutPhase);
+
+      if (surfaceMesh) {
+        surfaceMesh.visible = true;
+        surfaceMesh.material.opacity = 0.66 * (1 - revealPhase);
+      }
+      if (wireMesh) {
+        wireMesh.visible = showWireframe && revealPhase < 0.92;
+        wireMesh.material.opacity = 0.23 * (1 - revealPhase);
+      }
+
+      if (!oneThirdGroup) return;
+      oneThirdGroup.scale.setScalar(0.18 + revealPhase * 0.78);
+      oneThirdGroup.position.y = revealPhase * 0.42;
+      oneThirdGroup.rotation.z = (1 - revealPhase) * -0.55;
+
+      oneThirdGroup.children.forEach((child) => {
+        if (child.userData.follow) {
+          child.position.copy(child.userData.follow.position);
+          child.rotation.copy(child.userData.follow.rotation);
+        } else if (child.userData.finalPosition && child.userData.startPosition) {
+          child.position.copy(child.userData.startPosition).lerp(child.userData.finalPosition, revealPhase);
+          child.rotation.x = child.userData.finalRotation.x + (1 - revealPhase) * 0.9;
+          child.rotation.y = child.userData.finalRotation.y + (1 - revealPhase) * -0.8;
+          child.rotation.z = child.userData.finalRotation.z + (1 - revealPhase) * 0.55;
+        }
+        if (child.material) {
+          const baseOpacity = child.userData.baseOpacity ?? 1;
+          child.material.opacity = baseOpacity * revealPhase;
+        }
+      });
+
+      if (progress < 0.48) {
+        cutStatus.textContent = `${Math.round(cutPhase * 100)}% off-center cut`;
+        revealStatus.textContent = "Cutting one-third from edge";
+      } else {
+        cutStatus.textContent = "Loops separating";
+        revealStatus.textContent = "Linked loops emerging";
+      }
+    }
+
+    function updateOneThirdCutLaser(progress) {
+      disposeSceneObject(cutLaser);
+      cutLaser = null;
+      const points = [];
+      const cutOffset = currentA / 3;
+      const limit = Math.max(2, Math.floor(U_SEGMENTS * progress));
+      for (let i = 0; i <= limit; i += 1) {
+        points.push(pointOnBand(1, currentA, (i / U_SEGMENTS) * Math.PI * 2, cutOffset));
+      }
+      cutLaser = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(points),
+        new THREE.LineBasicMaterial({
+          color: 0xf4c85f,
+          transparent: true,
+          opacity: 1,
+          blending: THREE.AdditiveBlending
+        })
+      );
+      meshGroup.add(cutLaser);
+    }
+
+    function smoothstep(value) {
+      const x = Math.min(1, Math.max(0, value));
+      return x * x * (3 - 2 * x);
     }
 
     function disposeSceneObject(object) {
