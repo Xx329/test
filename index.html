@@ -397,6 +397,90 @@
       align-items: center;
     }
 
+    .orientation-panel {
+      position: absolute;
+      right: 18px;
+      top: 106px;
+      z-index: 3;
+      display: none;
+      width: 218px;
+      padding: 12px;
+      border: 1px solid rgba(65, 230, 223, 0.2);
+      border-radius: var(--radius);
+      background: rgba(7, 9, 15, 0.72);
+      box-shadow: 0 0 30px rgba(65, 230, 223, 0.09);
+      backdrop-filter: blur(14px);
+      pointer-events: none;
+    }
+
+    .orientation-panel.active {
+      display: block;
+    }
+
+    .orientation-title {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .orientation-dial {
+      position: relative;
+      width: 54px;
+      height: 72px;
+      margin: 0 auto 8px;
+      transition: transform 0.5s ease;
+    }
+
+    .orientation-panel.flipped .orientation-dial {
+      transform: rotate(180deg);
+    }
+
+    .orientation-axis {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      bottom: 8px;
+      width: 4px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--cyan), var(--magenta));
+      box-shadow: 0 0 18px rgba(65, 230, 223, 0.5);
+      transform: translateX(-50%);
+    }
+
+    .orientation-dot {
+      position: absolute;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .orientation-dot.front {
+      top: 0;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(65, 230, 223, 0.9);
+    }
+
+    .orientation-dot.back {
+      bottom: 0;
+      background: var(--magenta);
+      box-shadow: 0 0 18px rgba(241, 95, 169, 0.8);
+    }
+
+    .orientation-copy {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 850;
+      line-height: 1.35;
+      text-align: center;
+    }
+
     .status-strip {
       position: absolute;
       left: 18px;
@@ -1085,6 +1169,42 @@
         font-size: 0.68rem;
       }
 
+      .orientation-panel {
+        left: 12px;
+        right: 12px;
+        top: 86px;
+        width: auto;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 10px;
+      }
+
+      .orientation-panel.active {
+        display: grid;
+      }
+
+      .orientation-title {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+      }
+
+      .orientation-dial {
+        width: 38px;
+        height: 48px;
+        margin: 0;
+      }
+
+      .orientation-dot {
+        width: 13px;
+        height: 13px;
+      }
+
+      .orientation-copy {
+        font-size: 0.72rem;
+        text-align: left;
+      }
+
       .act {
         padding: 18px;
       }
@@ -1174,6 +1294,15 @@
           <div class="viewer-badge"><span></span>Drag to rotate · Scroll to zoom</div>
           <div class="viewer-mode" id="viewerMode">Act I · Normal Band</div>
           <button class="dock-toggle" type="button" id="releaseStageButton">Release Stage</button>
+          <div class="orientation-panel" id="orientationPanel" aria-hidden="true">
+            <span class="orientation-title">Orientation Compass</span>
+            <div class="orientation-dial">
+              <span class="orientation-axis"></span>
+              <span class="orientation-dot front"></span>
+              <span class="orientation-dot back"></span>
+            </div>
+            <p class="orientation-copy" id="orientationPanelText">Cyan marker shows the starting side.</p>
+          </div>
           <div class="status-strip">
             <div class="status-chip">
               <span class="status-label">Lap</span>
@@ -1591,6 +1720,8 @@ z = v sin(nu/2)</pre>
     const orientationStatus = document.getElementById("orientationStatus");
     const revealStatus = document.getElementById("revealStatus");
     const cutStatus = document.getElementById("cutStatus");
+    const orientationPanel = document.getElementById("orientationPanel");
+    const orientationPanelText = document.getElementById("orientationPanelText");
     const statePill = document.getElementById("statePill");
     const labStatePill = document.getElementById("labStatePill");
     const sideCountEl = document.getElementById("sideCount");
@@ -1639,6 +1770,9 @@ z = v sin(nu/2)</pre>
     let boundaryGroup;
     let antGroup;
     let antHalo;
+    let antFrontMarker;
+    let antBackMarker;
+    let antArrow;
     let cutLaser;
     let oneThirdGroup;
     let flatDemoGroup;
@@ -1656,6 +1790,7 @@ z = v sin(nu/2)</pre>
     let rotationState = { x: -0.36, y: 0.68 };
     let antRunning = false;
     let antProgress = 0;
+    let antPausedAtFirstLap = false;
     let paintMode = "none";
     let paintProgress = 0;
     let centerCutRunning = false;
@@ -1978,11 +2113,11 @@ z = v sin(nu/2)</pre>
     function createTraveler() {
       const group = new THREE.Group();
       const body = new THREE.Mesh(
-        new THREE.SphereGeometry(0.075, 24, 16),
+        new THREE.SphereGeometry(0.1, 28, 18),
         new THREE.MeshBasicMaterial({ color: 0x7df2a0 })
       );
       antHalo = new THREE.Mesh(
-        new THREE.SphereGeometry(0.17, 24, 16),
+        new THREE.SphereGeometry(0.25, 28, 18),
         new THREE.MeshBasicMaterial({
           color: 0x41e6df,
           transparent: true,
@@ -1991,13 +2126,73 @@ z = v sin(nu/2)</pre>
           depthWrite: false
         })
       );
-      const arrow = new THREE.Mesh(
-        new THREE.ConeGeometry(0.045, 0.16, 18),
-        new THREE.MeshBasicMaterial({ color: 0xf4c85f })
+
+      antArrow = new THREE.Mesh(
+        new THREE.ConeGeometry(0.075, 0.32, 24),
+        new THREE.MeshBasicMaterial({ color: 0xf4c85f, transparent: true, opacity: 0.98 })
       );
-      arrow.position.x = 0.16;
-      arrow.rotation.z = -Math.PI / 2;
-      group.add(antHalo, body, arrow);
+      antArrow.position.x = 0.32;
+      antArrow.rotation.z = -Math.PI / 2;
+
+      // The side compass makes orientation visible: green and magenta sit on
+      // opposite width-directions of the strip. After one lap on a Möbius strip,
+      // this compass visibly flips even though the traveler stayed on one path.
+      const compassBar = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.012, 0.012, 0.66, 12),
+        new THREE.MeshBasicMaterial({
+          color: 0xeafcff,
+          transparent: true,
+          opacity: 0.72
+        })
+      );
+
+      antFrontMarker = new THREE.Mesh(
+        new THREE.SphereGeometry(0.075, 20, 14),
+        new THREE.MeshBasicMaterial({ color: 0x41e6df })
+      );
+      antFrontMarker.position.y = 0.38;
+
+      antBackMarker = new THREE.Mesh(
+        new THREE.SphereGeometry(0.065, 20, 14),
+        new THREE.MeshBasicMaterial({ color: 0xf15fa9 })
+      );
+      antBackMarker.position.y = -0.38;
+
+      const frontGlow = new THREE.Mesh(
+        new THREE.SphereGeometry(0.13, 20, 14),
+        new THREE.MeshBasicMaterial({
+          color: 0x41e6df,
+          transparent: true,
+          opacity: 0.22,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        })
+      );
+      frontGlow.position.copy(antFrontMarker.position);
+
+      const backGlow = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 20, 14),
+        new THREE.MeshBasicMaterial({
+          color: 0xf15fa9,
+          transparent: true,
+          opacity: 0.2,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        })
+      );
+      backGlow.position.copy(antBackMarker.position);
+
+      const orbitRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.24, 0.008, 8, 48),
+        new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.3
+        })
+      );
+      orbitRing.rotation.x = Math.PI / 2;
+
+      group.add(antHalo, orbitRing, compassBar, frontGlow, backGlow, body, antArrow, antFrontMarker, antBackMarker);
       return group;
     }
 
@@ -2063,6 +2258,22 @@ z = v sin(nu/2)</pre>
         (RADIUS + v * Math.cos(twist)) * Math.sin(u),
         v * Math.sin(twist)
       );
+    }
+
+    function bandFrame(n, u) {
+      const epsilon = 0.008;
+      const ahead = pointOnBand(n, currentA, u + epsilon, 0);
+      const behind = pointOnBand(n, currentA, u - epsilon, 0);
+      const tangent = ahead.sub(behind).normalize();
+      const twist = (n * u) / 2;
+      const widthDirection = new THREE.Vector3(
+        Math.cos(twist) * Math.cos(u),
+        Math.cos(twist) * Math.sin(u),
+        Math.sin(twist)
+      ).normalize();
+      const normal = new THREE.Vector3().crossVectors(tangent, widthDirection).normalize();
+      const correctedWidth = new THREE.Vector3().crossVectors(normal, tangent).normalize();
+      return { tangent, widthDirection: correctedWidth, normal };
     }
 
     function updateModel(n = currentN, a = currentA, mode = currentMode) {
@@ -2233,9 +2444,16 @@ z = v sin(nu/2)</pre>
     function startAntJourney() {
       enableStageDock();
       updateModel(1, currentA, "mobius");
+      if (antProgress >= Math.PI * 4) {
+        antProgress = 0;
+        antPausedAtFirstLap = false;
+      }
       antRunning = true;
       antGroup.visible = true;
-      antMessage.textContent = "Journey started. Watch the lap counter.";
+      orientationPanel.classList.add("active");
+      antMessage.textContent = antPausedAtFirstLap
+        ? "Continuing to the second lap. Watch the compass restore its original direction."
+        : "Journey started. Watch the cyan-magenta compass flip after one lap.";
     }
 
     function pauseAntJourney() {
@@ -2248,8 +2466,12 @@ z = v sin(nu/2)</pre>
       if (shouldDock) enableStageDock();
       antRunning = false;
       antProgress = 0;
+      antPausedAtFirstLap = false;
       lapStatus.textContent = "0";
       orientationStatus.textContent = "Front-like";
+      orientationPanel.classList.toggle("active", shouldDock);
+      orientationPanel.classList.remove("flipped");
+      orientationPanelText.textContent = "Cyan marker shows the starting side.";
       antMessage.textContent = "Ready at the starting point.";
       positionTraveler();
     }
@@ -2258,17 +2480,29 @@ z = v sin(nu/2)</pre>
       if (!antGroup) return;
       const u = antProgress % (Math.PI * 2);
       const p = pointOnBand(1, currentA, u, 0);
+      const frame = bandFrame(1, u);
       p.applyEuler(meshGroup.rotation);
       antGroup.position.copy(p);
+      frame.tangent.applyEuler(meshGroup.rotation);
+      frame.widthDirection.applyEuler(meshGroup.rotation);
+      frame.normal.applyEuler(meshGroup.rotation);
+      const orientationMatrix = new THREE.Matrix4().makeBasis(frame.tangent, frame.widthDirection, frame.normal);
+      antGroup.setRotationFromMatrix(orientationMatrix);
       const lap = Math.min(2, Math.floor(antProgress / (Math.PI * 2)));
       lapStatus.textContent = String(lap);
       if (lap === 0) {
         orientationStatus.textContent = "Front-like";
+        orientationPanel.classList.remove("flipped");
+        orientationPanelText.textContent = "Cyan marker shows the starting side.";
       } else if (lap === 1) {
-        orientationStatus.textContent = "Reversed";
-        antMessage.textContent = "The traveler returns to the same place with reversed orientation.";
+        orientationStatus.textContent = "Reversed: compass flipped";
+        orientationPanel.classList.add("flipped");
+        orientationPanelText.textContent = "After one lap, the compass is upside down.";
+        antMessage.textContent = "The traveler returns to the same place with reversed orientation. The cyan and magenta markers have swapped.";
       } else {
         orientationStatus.textContent = "Original direction restored";
+        orientationPanel.classList.remove("flipped");
+        orientationPanelText.textContent = "After two laps, the original direction is restored.";
         antMessage.textContent = "After two laps, the original orientation is restored.";
         antRunning = false;
       }
@@ -2867,6 +3101,11 @@ z = v sin(nu/2)</pre>
 
       if (antRunning) {
         antProgress += delta * 1.16;
+        if (!antPausedAtFirstLap && antProgress >= Math.PI * 2) {
+          antProgress = Math.PI * 2;
+          antRunning = false;
+          antPausedAtFirstLap = true;
+        }
         if (antProgress >= Math.PI * 4) {
           antProgress = Math.PI * 4;
         }
@@ -2899,6 +3138,8 @@ z = v sin(nu/2)</pre>
       if (antHalo) {
         const pulse = 1 + Math.sin(performance.now() * 0.008) * 0.18;
         antHalo.scale.setScalar(pulse);
+        if (antFrontMarker) antFrontMarker.scale.setScalar(1 + Math.sin(performance.now() * 0.01) * 0.24);
+        if (antBackMarker) antBackMarker.scale.setScalar(1 + Math.cos(performance.now() * 0.01) * 0.16);
       }
 
       if (playgroundGroup) {
