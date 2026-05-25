@@ -6,19 +6,19 @@
   <title>Möbius Magic Show</title>
   <style>
     :root {
-      --bg: #07090f;
-      --panel: rgba(16, 20, 30, 0.78);
-      --panel-strong: rgba(20, 25, 38, 0.9);
-      --text: #f4f8ff;
-      --muted: #a8b3c4;
-      --line: rgba(255, 255, 255, 0.13);
-      --cyan: #41e6df;
-      --magenta: #f15fa9;
-      --amber: #f4c85f;
-      --green: #7df2a0;
-      --blue: #6ea8ff;
-      --danger: #ff7878;
-      --shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+      --bg: #f6fbff;
+      --panel: rgba(255, 255, 255, 0.78);
+      --panel-strong: rgba(255, 255, 255, 0.92);
+      --text: #172033;
+      --muted: #657389;
+      --line: rgba(38, 63, 94, 0.14);
+      --cyan: #0aa7b7;
+      --magenta: #db5b91;
+      --amber: #d38b14;
+      --green: #24a76b;
+      --blue: #3f7edb;
+      --danger: #d94646;
+      --shadow: 0 24px 70px rgba(45, 78, 116, 0.16);
       --radius: 8px;
     }
 
@@ -36,11 +36,11 @@
       min-height: 100vh;
       color: var(--text);
       background:
-        linear-gradient(rgba(255, 255, 255, 0.032) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-        radial-gradient(circle at 18% 6%, rgba(65, 230, 223, 0.16), transparent 32%),
-        radial-gradient(circle at 86% 12%, rgba(241, 95, 169, 0.14), transparent 30%),
-        radial-gradient(circle at 50% 76%, rgba(244, 200, 95, 0.08), transparent 42%),
+        linear-gradient(rgba(45, 78, 116, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 78, 116, 0.07) 1px, transparent 1px),
+        radial-gradient(circle at 12% 8%, rgba(10, 167, 183, 0.2), transparent 30%),
+        radial-gradient(circle at 88% 10%, rgba(219, 91, 145, 0.16), transparent 28%),
+        radial-gradient(circle at 50% 78%, rgba(211, 139, 20, 0.11), transparent 42%),
         var(--bg);
       background-size: 44px 44px, 44px 44px, auto, auto, auto, auto;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -59,9 +59,9 @@
       z-index: -2;
       opacity: 0.62;
       background-image:
-        radial-gradient(circle, rgba(65, 230, 223, 0.46) 0 1px, transparent 1.7px),
-        radial-gradient(circle, rgba(241, 95, 169, 0.34) 0 1px, transparent 1.6px),
-        radial-gradient(circle, rgba(244, 200, 95, 0.28) 0 1px, transparent 1.8px);
+        radial-gradient(circle, rgba(10, 167, 183, 0.32) 0 1px, transparent 1.7px),
+        radial-gradient(circle, rgba(219, 91, 145, 0.2) 0 1px, transparent 1.6px),
+        radial-gradient(circle, rgba(211, 139, 20, 0.18) 0 1px, transparent 1.8px);
       background-position: 0 0, 30px 46px, 70px 18px;
       background-size: 88px 88px, 138px 138px, 172px 172px;
       animation: driftParticles 22s linear infinite;
@@ -73,7 +73,7 @@
       position: fixed;
       inset: 0;
       z-index: -1;
-      background: linear-gradient(180deg, transparent 0%, rgba(7, 9, 15, 0.58) 64%, var(--bg) 100%);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(246, 251, 255, 0.7) 66%, var(--bg) 100%);
       pointer-events: none;
     }
 
@@ -141,11 +141,11 @@
       font-size: clamp(3.4rem, 8vw, 8.9rem);
       line-height: 0.88;
       letter-spacing: 0;
-      background: linear-gradient(110deg, #ffffff, #cffffc 38%, #ffd3ec 70%, #fff0bd);
+      background: linear-gradient(110deg, #13213a, #0a7f99 38%, #c84f86 70%, #b87511);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      filter: drop-shadow(0 0 26px rgba(65, 230, 223, 0.18));
+      filter: drop-shadow(0 12px 26px rgba(45, 78, 116, 0.13));
     }
 
     .hero-subtitle {
@@ -175,10 +175,10 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background:
-        radial-gradient(circle at 50% 45%, rgba(65, 230, 223, 0.22), transparent 34%),
-        radial-gradient(circle at 62% 62%, rgba(241, 95, 169, 0.16), transparent 30%),
-        rgba(8, 11, 17, 0.62);
-      box-shadow: var(--shadow), inset 0 0 80px rgba(65, 230, 223, 0.04);
+        radial-gradient(circle at 50% 45%, rgba(10, 167, 183, 0.16), transparent 34%),
+        radial-gradient(circle at 62% 62%, rgba(219, 91, 145, 0.12), transparent 30%),
+        rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow), inset 0 0 80px rgba(10, 167, 183, 0.05);
       overflow: hidden;
       backdrop-filter: blur(18px);
     }
@@ -186,20 +186,20 @@
     .hero-loop {
       position: absolute;
       inset: 72px;
-      border: 34px solid rgba(65, 230, 223, 0.42);
-      border-left-color: rgba(241, 95, 169, 0.54);
-      border-bottom-color: rgba(244, 200, 95, 0.48);
+      border: 34px solid rgba(10, 167, 183, 0.38);
+      border-left-color: rgba(219, 91, 145, 0.44);
+      border-bottom-color: rgba(211, 139, 20, 0.4);
       border-radius: 50%;
       transform-style: preserve-3d;
       animation: heroLoopSpin 8s linear infinite;
-      filter: drop-shadow(0 0 34px rgba(65, 230, 223, 0.36));
+      filter: drop-shadow(0 16px 28px rgba(45, 78, 116, 0.16));
     }
 
     .hero-loop::before {
       content: "";
       position: absolute;
       inset: -34px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(23, 32, 51, 0.16);
       border-radius: 50%;
       transform: rotateX(68deg) rotateY(28deg);
     }
@@ -234,9 +234,9 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background:
-        linear-gradient(135deg, rgba(65, 230, 223, 0.08), transparent 30%),
-        linear-gradient(315deg, rgba(241, 95, 169, 0.09), transparent 34%),
-        rgba(13, 17, 27, 0.76);
+        linear-gradient(135deg, rgba(10, 167, 183, 0.08), transparent 30%),
+        linear-gradient(315deg, rgba(219, 91, 145, 0.08), transparent 34%),
+        rgba(255, 255, 255, 0.78);
       box-shadow: var(--shadow);
       backdrop-filter: blur(20px);
       overflow: hidden;
@@ -249,7 +249,7 @@
       right: 26px;
       top: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(65, 230, 223, 0.8), rgba(241, 95, 169, 0.55), transparent);
+      background: linear-gradient(90deg, transparent, rgba(10, 167, 183, 0.6), rgba(219, 91, 145, 0.4), transparent);
     }
 
     .act-header {
@@ -290,9 +290,9 @@
       border-radius: var(--radius);
       overflow: hidden;
       background:
-        radial-gradient(circle at 50% 42%, rgba(65, 230, 223, 0.1), transparent 36%),
-        #06080d;
-      box-shadow: inset 0 0 70px rgba(65, 230, 223, 0.04);
+        radial-gradient(circle at 50% 42%, rgba(10, 167, 183, 0.08), transparent 36%),
+        #f9fcff;
+      box-shadow: inset 0 0 70px rgba(10, 167, 183, 0.05);
     }
 
     body.stage-dock .viewer-shell {
@@ -304,7 +304,7 @@
       min-height: 360px;
       z-index: 80;
       transform: translateX(-50%);
-      box-shadow: 0 26px 90px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(65, 230, 223, 0.18);
+      box-shadow: 0 26px 90px rgba(45, 78, 116, 0.22), 0 0 0 1px rgba(10, 167, 183, 0.18);
     }
 
     body.stage-dock .viewer-shell::after {
@@ -316,7 +316,7 @@
       padding: 6px 10px;
       border: 1px solid rgba(244, 200, 95, 0.36);
       border-radius: 999px;
-      background: rgba(7, 9, 15, 0.68);
+      background: rgba(255, 255, 255, 0.78);
       color: var(--amber);
       font-size: 0.76rem;
       font-weight: 900;
@@ -341,7 +341,7 @@
       z-index: 2;
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(7, 9, 15, 0.66);
+      background: rgba(255, 255, 255, 0.76);
       color: var(--muted);
       backdrop-filter: blur(14px);
       pointer-events: none;
@@ -382,9 +382,9 @@
       display: none;
       min-height: 34px;
       padding: 7px 10px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(38, 63, 94, 0.16);
       border-radius: 999px;
-      background: rgba(7, 9, 15, 0.74);
+      background: rgba(255, 255, 255, 0.82);
       color: var(--text);
       cursor: pointer;
       font-size: 0.78rem;
@@ -405,10 +405,10 @@
       display: none;
       width: 218px;
       padding: 12px;
-      border: 1px solid rgba(65, 230, 223, 0.2);
+      border: 1px solid rgba(10, 167, 183, 0.18);
       border-radius: var(--radius);
-      background: rgba(7, 9, 15, 0.72);
-      box-shadow: 0 0 30px rgba(65, 230, 223, 0.09);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 18px 42px rgba(45, 78, 116, 0.12);
       backdrop-filter: blur(14px);
       pointer-events: none;
     }
@@ -498,7 +498,7 @@
       padding: 10px 12px;
       border: 1px solid rgba(65, 230, 223, 0.22);
       border-radius: var(--radius);
-      background: rgba(7, 9, 15, 0.64);
+      background: rgba(255, 255, 255, 0.72);
       backdrop-filter: blur(12px);
     }
 
@@ -570,9 +570,9 @@
     .quiz-option,
     .toggle-button {
       min-height: 46px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(38, 63, 94, 0.16);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.055);
+      background: rgba(255, 255, 255, 0.64);
       color: var(--text);
       cursor: pointer;
       padding: 10px 13px;
@@ -583,15 +583,15 @@
     .button.primary,
     .choice.active,
     .toggle-button.active {
-      border-color: rgba(65, 230, 223, 0.72);
-      background: linear-gradient(135deg, rgba(65, 230, 223, 0.22), rgba(241, 95, 169, 0.16));
-      box-shadow: 0 0 28px rgba(65, 230, 223, 0.16);
+      border-color: rgba(10, 167, 183, 0.48);
+      background: linear-gradient(135deg, rgba(10, 167, 183, 0.16), rgba(219, 91, 145, 0.1));
+      box-shadow: 0 14px 28px rgba(10, 167, 183, 0.13);
     }
 
     .button.amber {
-      border-color: rgba(244, 200, 95, 0.74);
-      background: rgba(244, 200, 95, 0.14);
-      box-shadow: 0 0 24px rgba(244, 200, 95, 0.12);
+      border-color: rgba(211, 139, 20, 0.48);
+      background: rgba(255, 241, 212, 0.72);
+      box-shadow: 0 12px 24px rgba(211, 139, 20, 0.12);
     }
 
     .button:hover,
@@ -603,8 +603,8 @@
     .toggle-button:hover,
     .toggle-button:focus-visible {
       transform: translateY(-1px);
-      border-color: rgba(65, 230, 223, 0.78);
-      background: rgba(65, 230, 223, 0.12);
+      border-color: rgba(10, 167, 183, 0.62);
+      background: rgba(224, 249, 251, 0.78);
       outline: none;
     }
 
@@ -638,7 +638,7 @@
       padding: 13px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
+      background: rgba(255, 255, 255, 0.58);
     }
 
     .property-label {
@@ -681,15 +681,15 @@
     .quiz-card {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
+      background: rgba(255, 255, 255, 0.58);
     }
 
     .extension-box {
       margin-top: 12px;
       padding: 13px;
       background:
-        linear-gradient(135deg, rgba(244, 200, 95, 0.1), transparent 44%),
-        rgba(255, 255, 255, 0.045);
+        linear-gradient(135deg, rgba(211, 139, 20, 0.12), transparent 44%),
+        rgba(255, 255, 255, 0.64);
     }
 
     .extension-box strong {
@@ -721,9 +721,9 @@
       display: grid;
       place-items: center;
       border-radius: 50%;
-      border: 1px solid rgba(65, 230, 223, 0.35);
+      border: 1px solid rgba(10, 167, 183, 0.28);
       color: var(--cyan);
-      box-shadow: 0 0 18px rgba(65, 230, 223, 0.1);
+      box-shadow: 0 10px 18px rgba(10, 167, 183, 0.08);
     }
 
     .compare-box {
@@ -760,7 +760,7 @@
       padding: 18px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(7, 9, 15, 0.52);
+      background: rgba(255, 255, 255, 0.62);
     }
 
     .experiment-card h3 {
@@ -804,10 +804,10 @@
       border-radius: var(--radius);
       overflow: hidden;
       background:
-        radial-gradient(circle at 50% 42%, rgba(241, 95, 169, 0.11), transparent 34%),
-        radial-gradient(circle at 38% 56%, rgba(65, 230, 223, 0.11), transparent 34%),
-        #06080d;
-      box-shadow: inset 0 0 70px rgba(65, 230, 223, 0.04);
+        radial-gradient(circle at 50% 42%, rgba(219, 91, 145, 0.08), transparent 34%),
+        radial-gradient(circle at 38% 56%, rgba(10, 167, 183, 0.08), transparent 34%),
+        #f9fcff;
+      box-shadow: inset 0 0 70px rgba(10, 167, 183, 0.05);
     }
 
     #topologyCanvas {
@@ -824,7 +824,7 @@
       padding: 8px 12px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(7, 9, 15, 0.68);
+      background: rgba(255, 255, 255, 0.78);
       color: var(--cyan);
       font-size: 0.82rem;
       font-weight: 900;
@@ -837,9 +837,9 @@
       min-height: 46px;
       margin-bottom: 16px;
       padding: 10px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(38, 63, 94, 0.16);
       border-radius: var(--radius);
-      background: rgba(7, 9, 15, 0.72);
+      background: rgba(255, 255, 255, 0.82);
       color: var(--text);
       font-weight: 850;
     }
@@ -850,8 +850,8 @@
       padding: 12px;
       border: 1px solid rgba(255, 120, 120, 0.6);
       border-radius: var(--radius);
-      background: rgba(255, 120, 120, 0.1);
-      color: #ffd4d4;
+      background: rgba(255, 120, 120, 0.12);
+      color: #9f2424;
       font-weight: 850;
     }
 
@@ -868,7 +868,7 @@
       padding: 13px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
+      background: rgba(255, 255, 255, 0.58);
     }
 
     .playground-property strong {
@@ -892,8 +892,8 @@
       padding: 22px;
       border: 1px solid rgba(65, 230, 223, 0.18);
       border-radius: var(--radius);
-      background: #070a10;
-      color: #eafcff;
+      background: #ffffff;
+      color: #173048;
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       font-size: clamp(0.96rem, 1.8vw, 1.08rem);
       overflow-x: auto;
@@ -932,7 +932,7 @@
     .app-card:hover {
       transform: translateY(-3px);
       border-color: rgba(65, 230, 223, 0.55);
-      background: rgba(65, 230, 223, 0.07);
+      background: rgba(224, 249, 251, 0.72);
     }
 
     .app-icon {
@@ -941,11 +941,11 @@
       display: grid;
       place-items: center;
       margin-bottom: 14px;
-      border: 1px solid rgba(65, 230, 223, 0.3);
+      border: 1px solid rgba(10, 167, 183, 0.25);
       border-radius: 50%;
       color: var(--cyan);
       font-size: 1.35rem;
-      box-shadow: 0 0 22px rgba(65, 230, 223, 0.08);
+      box-shadow: 0 10px 22px rgba(10, 167, 183, 0.09);
     }
 
     .app-card h3,
@@ -984,7 +984,7 @@
 
     .quiz-option.correct {
       border-color: rgba(125, 242, 160, 0.82);
-      background: rgba(125, 242, 160, 0.12);
+      background: rgba(36, 167, 107, 0.12);
     }
 
     .quiz-option.wrong {
@@ -1001,7 +1001,7 @@
       padding: 16px 18px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
+      background: rgba(255, 255, 255, 0.64);
     }
 
     .score-value {
@@ -1016,8 +1016,8 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background:
-        radial-gradient(circle at 50% 0%, rgba(65, 230, 223, 0.14), transparent 38%),
-        rgba(13, 17, 27, 0.82);
+        radial-gradient(circle at 50% 0%, rgba(10, 167, 183, 0.12), transparent 38%),
+        rgba(255, 255, 255, 0.82);
       box-shadow: var(--shadow);
     }
 
@@ -1048,7 +1048,7 @@
 
     .footer {
       padding: 26px 0 46px;
-      color: rgba(244, 248, 255, 0.48);
+      color: rgba(23, 32, 51, 0.48);
       text-align: center;
       font-size: 0.86rem;
     }
@@ -2040,7 +2040,7 @@ z = v sin(nu/2)</pre>
 
     function initThreeScene() {
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x06080d);
+      scene.background = new THREE.Color(0xf9fcff);
 
       camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
       camera.position.set(0, 0.2, 5.2);
@@ -2059,11 +2059,11 @@ z = v sin(nu/2)</pre>
       rim.position.set(-4, -2.8, 3.8);
       scene.add(rim);
 
-      const floorGrid = new THREE.GridHelper(5.6, 16, 0x233846, 0x18232d);
+      const floorGrid = new THREE.GridHelper(5.6, 16, 0xb9ccd9, 0xe0eaf2);
       floorGrid.rotation.x = Math.PI / 2;
       floorGrid.position.z = -1.25;
       floorGrid.material.transparent = true;
-      floorGrid.material.opacity = 0.22;
+      floorGrid.material.opacity = 0.42;
       scene.add(floorGrid);
 
       meshGroup = new THREE.Group();
@@ -2079,7 +2079,7 @@ z = v sin(nu/2)</pre>
 
     function initTopologyPlayground() {
       playgroundScene = new THREE.Scene();
-      playgroundScene.background = new THREE.Color(0x06080d);
+      playgroundScene.background = new THREE.Color(0xf9fcff);
 
       playgroundCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
       playgroundCamera.position.set(0, 0.15, 5.8);
@@ -2100,11 +2100,11 @@ z = v sin(nu/2)</pre>
       rim.position.set(-3.8, -2.4, 3.4);
       playgroundScene.add(rim);
 
-      const grid = new THREE.GridHelper(5.6, 16, 0x233846, 0x18232d);
+      const grid = new THREE.GridHelper(5.6, 16, 0xb9ccd9, 0xe0eaf2);
       grid.rotation.x = Math.PI / 2;
       grid.position.z = -1.35;
       grid.material.transparent = true;
-      grid.material.opacity = 0.22;
+      grid.material.opacity = 0.42;
       playgroundScene.add(grid);
 
       playgroundGroup = new THREE.Group();
@@ -2324,10 +2324,10 @@ z = v sin(nu/2)</pre>
       wireMesh = new THREE.Mesh(
         geometry.clone(),
         new THREE.MeshBasicMaterial({
-          color: 0xffffff,
+          color: 0x244057,
           wireframe: true,
           transparent: true,
-          opacity: 0.23,
+          opacity: 0.2,
           side: THREE.DoubleSide
         })
       );
@@ -2906,7 +2906,7 @@ z = v sin(nu/2)</pre>
       const wire = new THREE.Mesh(
         geometry.clone(),
         new THREE.MeshBasicMaterial({
-          color: 0xffffff,
+          color: 0x244057,
           wireframe: true,
           transparent: true,
           opacity: 0.18,
