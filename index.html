@@ -191,7 +191,7 @@
       border-bottom-color: rgba(211, 139, 20, 0.4);
       border-radius: 50%;
       transform-style: preserve-3d;
-      animation: heroLoopSpin 8s linear infinite;
+      transform: rotateX(66deg) rotateZ(-8deg);
       filter: drop-shadow(0 16px 28px rgba(45, 78, 116, 0.16));
     }
 
@@ -1521,7 +1521,6 @@
             <input id="widthSlider" type="range" min="0.1" max="0.6" step="0.05" value="0.3" />
           </label>
           <div class="button-row">
-            <button class="toggle-button active" type="button" id="autoRotateButton">Auto Rotate</button>
             <button class="toggle-button active" type="button" id="wireframeButton">Show Wireframe</button>
             <button class="toggle-button active" type="button" id="centerLineButton">Show Center Line</button>
             <button class="toggle-button" type="button" id="boundaryButton">Show Boundary</button>
@@ -1781,7 +1780,7 @@ z = v sin(nu/2)</pre>
     let currentN = 1;
     let currentA = 0.3;
     let currentMode = "mobius";
-    let autoRotate = true;
+    let autoRotate = false;
     let showWireframe = true;
     let showCenterLine = true;
     let showBoundary = false;
@@ -1952,10 +1951,6 @@ z = v sin(nu/2)</pre>
       playR.addEventListener("input", updatePlaygroundSurface);
       playA.addEventListener("input", updatePlaygroundSurface);
 
-      document.getElementById("autoRotateButton").addEventListener("click", (event) => {
-        autoRotate = !autoRotate;
-        event.currentTarget.classList.toggle("active", autoRotate);
-      });
       document.getElementById("wireframeButton").addEventListener("click", (event) => {
         showWireframe = !showWireframe;
         event.currentTarget.classList.toggle("active", showWireframe);
@@ -3104,8 +3099,7 @@ z = v sin(nu/2)</pre>
     function resetView() {
       rotationState = { x: -0.36, y: 0.68 };
       camera.position.set(0, 0.2, 5.2);
-      autoRotate = true;
-      document.getElementById("autoRotateButton").classList.add("active");
+      autoRotate = false;
       updateModel(currentN, currentA, currentMode);
     }
 
@@ -3193,8 +3187,7 @@ z = v sin(nu/2)</pre>
       }
 
       if (playgroundGroup) {
-        playgroundGroup.rotation.x = -0.34 + Math.sin(performance.now() * 0.0005) * 0.08;
-        playgroundGroup.rotation.y += delta * 0.22;
+        playgroundGroup.rotation.x = -0.34;
       }
 
       renderer.render(scene, camera);
