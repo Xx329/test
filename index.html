@@ -814,6 +814,12 @@
       display: block;
       width: 100%;
       height: 100%;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    #topologyCanvas:active {
+      cursor: grabbing;
     }
 
     .playground-badge {
@@ -1810,6 +1816,9 @@ z = v sin(nu/2)</pre>
     let playgroundObject;
     let playgroundWire;
     let playgroundCurveGlow;
+    let isPlaygroundDragging = false;
+    let previousPlaygroundPointer = { x: 0, y: 0 };
+    let playgroundRotationState = { x: -0.34, y: 0.55 };
 
     const applicationCards = [
       {
@@ -1981,7 +1990,7 @@ z = v sin(nu/2)</pre>
       canvas.addEventListener("pointerdown", (event) => {
         isDragging = true;
         previousPointer = { x: event.clientX, y: event.clientY };
-        canvas.setPointerCapture(event.pointerId);
+        if (event.pointerId !== undefined) canvas.setPointerCapture(event.pointerId);
       });
       canvas.addEventListener("pointermove", (event) => {
         if (!isDragging) return;
@@ -1994,7 +2003,7 @@ z = v sin(nu/2)</pre>
       });
       canvas.addEventListener("pointerup", (event) => {
         isDragging = false;
-        canvas.releasePointerCapture(event.pointerId);
+        if (event.pointerId !== undefined) canvas.releasePointerCapture(event.pointerId);
       });
       canvas.addEventListener("pointercancel", () => {
         isDragging = false;
@@ -2003,6 +2012,33 @@ z = v sin(nu/2)</pre>
         event.preventDefault();
         camera.position.z += event.deltaY * 0.0035;
         camera.position.z = Math.max(3.0, Math.min(8.2, camera.position.z));
+      }, { passive: false });
+
+      topologyCanvas.addEventListener("pointerdown", (event) => {
+        isPlaygroundDragging = true;
+        previousPlaygroundPointer = { x: event.clientX, y: event.clientY };
+        if (event.pointerId !== undefined) topologyCanvas.setPointerCapture(event.pointerId);
+      });
+      topologyCanvas.addEventListener("pointermove", (event) => {
+        if (!isPlaygroundDragging) return;
+        const dx = event.clientX - previousPlaygroundPointer.x;
+        const dy = event.clientY - previousPlaygroundPointer.y;
+        previousPlaygroundPointer = { x: event.clientX, y: event.clientY };
+        playgroundRotationState.y += dx * 0.008;
+        playgroundRotationState.x += dy * 0.008;
+        playgroundRotationState.x = Math.max(-1.45, Math.min(1.45, playgroundRotationState.x));
+      });
+      topologyCanvas.addEventListener("pointerup", (event) => {
+        isPlaygroundDragging = false;
+        if (event.pointerId !== undefined) topologyCanvas.releasePointerCapture(event.pointerId);
+      });
+      topologyCanvas.addEventListener("pointercancel", () => {
+        isPlaygroundDragging = false;
+      });
+      topologyCanvas.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        playgroundCamera.position.z += event.deltaY * 0.0035;
+        playgroundCamera.position.z = Math.max(3.2, Math.min(9.2, playgroundCamera.position.z));
       }, { passive: false });
       window.addEventListener("resize", resizeRenderer);
     }
@@ -3187,7 +3223,8 @@ z = v sin(nu/2)</pre>
       }
 
       if (playgroundGroup) {
-        playgroundGroup.rotation.x = -0.34;
+        playgroundGroup.rotation.x = playgroundRotationState.x;
+        playgroundGroup.rotation.y = playgroundRotationState.y;
       }
 
       renderer.render(scene, camera);
