@@ -889,6 +889,7 @@
     .playground-property span {
       color: var(--text);
       font-weight: 800;
+      overflow-wrap: anywhere;
     }
 
     .equations {
@@ -1646,7 +1647,7 @@ z = v sin(nu/2)</pre>
               </div>
               <div class="playground-property">
                 <strong>Key formula</strong>
-                <span id="pgFormula">x = (R + v cos(nu/2)) cos u</span>
+                <span id="pgFormula">x=(R+v cos(nu/2))cos u; y=(R+v cos(nu/2))sin u; z=v sin(nu/2)</span>
               </div>
               <div class="playground-property">
                 <strong>What changed from the Möbius strip?</strong>
@@ -2851,7 +2852,7 @@ z = v sin(nu/2)</pre>
           shortTitle: "Möbius",
           orientable: invalid ? "Invalid" : Number.isInteger(n) && Math.abs(n) % 2 === 1 ? "No" : "Yes",
           boundary: invalid ? "seam mismatch" : Number.isInteger(n) && Math.abs(n) % 2 === 1 ? "1" : "2",
-          formula: "x = (R + v cos(nu/2)) cos u",
+          formula: "x=(R+v cos(nu/2))cos u; y=(R+v cos(nu/2))sin u; z=v sin(nu/2)",
           changed: invalid ? "Fractional n breaks the gluing rule, so the band cannot close consistently." : "This keeps the Möbius formula and lets n control the gluing twist."
         },
         normal: {
@@ -2859,7 +2860,7 @@ z = v sin(nu/2)</pre>
           shortTitle: "Normal",
           orientable: "Yes",
           boundary: "2",
-          formula: "Möbius formula with n = 0",
+          formula: "x=(R+v)cos u; y=(R+v)sin u; z=0",
           changed: "ordinary band without half-twist"
         },
         torus: {
@@ -2867,7 +2868,7 @@ z = v sin(nu/2)</pre>
           shortTitle: "Torus",
           orientable: "Yes",
           boundary: "0",
-          formula: "x = (R + r cos v) cos u",
+          formula: "x=(R+r cos v)cos u; y=(R+r cos v)sin u; z=r sin v",
           changed: "closing both directions creates a donut surface"
         },
         klein: {
@@ -2875,7 +2876,7 @@ z = v sin(nu/2)</pre>
           shortTitle: "Klein",
           orientable: "No",
           boundary: "0",
-          formula: "3D Klein bottle parameterization",
+          formula: "s=0.72; rho=1.35+cos(u/2)sin v-sin(u/2)sin(2v); x=s rho cos u; y=s rho sin u; z=s[sin(u/2)sin v+cos(u/2)sin(2v)]",
           changed: "the surface is closed and non-orientable; self-intersection is allowed in 3D"
         },
         helicoid: {
@@ -2883,15 +2884,15 @@ z = v sin(nu/2)</pre>
           shortTitle: "Helicoid",
           orientable: "Yes",
           boundary: "open surface",
-          formula: "x = v cos u, y = v sin u, z = c u",
+          formula: "x=v cos u; y=v sin u; z=c u",
           changed: "the width direction spirals upward instead of closing into a band"
         },
         trefoil: {
           title: "Trefoil Knot",
           shortTitle: "Trefoil",
-          orientable: "curve / tube",
+          orientable: "Yes as a tube",
           boundary: "0 for tube",
-          formula: "x = sin u + 2 sin 2u",
+          formula: "x=sin u+2sin(2u); y=cos u-2cos(2u); z=-sin(3u)",
           changed: "changing the centerline from a circle to a knot creates a knotted object"
         }
       };
